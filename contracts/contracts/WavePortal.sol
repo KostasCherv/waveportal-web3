@@ -23,16 +23,16 @@ contract WavePortal {
 	uint256 chanceToWin = 50;
 
 	uint256 private seed;
-    mapping(address => uint256) public lastWavedAt;
+	mapping(address => uint256) public lastWavedAt;
 
 
-    event NewWave(address indexed from, uint256 timestamp, bool won);
+	event NewWave(address indexed from, uint256 timestamp, bool won);
 
 	constructor() payable {
 		owner = msg.sender;
 		seed = (block.timestamp + block.difficulty) % 100;
 
-    }
+	}
 
 	// set the chance to win
 	function setChanceToWin(uint256 _chance) public {
@@ -63,7 +63,7 @@ contract WavePortal {
 		return address(this).balance;
 	}
 
-    function wave(string memory _message) public {
+	function wave(string memory _message) public {
 		require(lastWavedAt[msg.sender] + 30 seconds < block.timestamp, "Must wait 30 seconds before waving again.");
 
 		lastWavedAt[msg.sender] = block.timestamp;
@@ -81,32 +81,32 @@ contract WavePortal {
 		seed = (block.difficulty + block.timestamp + seed) % 100;
 
 		 /*
-         * Give a 50% chance that the user wins the prize.
-         */
-        if (seed <= chanceToWin) {
-            /*
-             * The same code we had before to send the prize.
-             */
-            require(
-                prizeAmount <= address(this).balance,
-                "Trying to withdraw more money than the contract has."
-            );
-            (bool success, ) = (msg.sender).call{value: prizeAmount}("");
-            require(success, "Failed to withdraw money from contract.");
+		 * Give a 50% chance that the user wins the prize.
+		 */
+		if (seed <= chanceToWin) {
+			/*
+			 * The same code we had before to send the prize.
+			 */
+			require(
+				prizeAmount <= address(this).balance,
+				"Trying to withdraw more money than the contract has."
+			);
+			(bool success, ) = (msg.sender).call{value: prizeAmount}("");
+			require(success, "Failed to withdraw money from contract.");
 			return true;
-        }
+		}
 
 		return false;
 	}
 
 	
-    function getTotalWaves() public view returns (uint256) {
-        return waversCount;
-    }
+	function getTotalWaves() public view returns (uint256) {
+		return waversCount;
+	}
 	
 	function getAllWaves() public view returns (Wave[] memory) {
-        return waves;
-    }
+		return waves;
+	}
 
 	function getUniqueWavers() public view returns (uint256) {
 		return uniquesCount;
